@@ -1,0 +1,94 @@
+---
+title: "Azure OpenAI"
+---
+
+You can use Helicone with your Azure-OpenAI deployment, and it requires no additional code changes beyond importing the OpenAI package with Helicone.
+
+<Tabs>
+ <Tab title="Python">
+  **Set HELICONE_API_KEY as an environment variable**
+  ```python
+  export HELICONE_API_KEY=<your API key>
+  ```
+
+**Change the api base and add a Helicone-Auth header**
+
+```python
+import openai
+
+openai.api_base = "https://oai.hconeai.com"
+openai.api_key = "[AZURE_OPENAI_API_KEY]"
+openai.api_version = "[API_VERSION]"
+openai.api_type = "azure"
+
+# Create the completion request
+openai.ChatCompletion.create(
+    model="[DEPLOYMENT]",
+    messages=[{"role": "User", "content": "Say hi!"}],
+    headers={
+        "Helicone-Auth": "Bearer [HELICONE_API_KEY]",
+        "Helicone-OpenAI-Api-Base": "https://[AZURE_DOMAIN].openai.azure.com",
+    }
+)
+```
+
+    That's it! Your OpenAI requests now log results to Helicone. You can use advanced Helicone features as parameters:
+
+  </Tab>
+  
+  <Tab title="Node.js">
+
+### Set HELICONE_API_KEY as an environment variable
+
+```bash
+export HELICONE_API_KEY=<your API key>
+```
+
+## Change the base path and add a Helicone-Auth header
+
+```javascript
+import { Configuration, OpenAIApi } from "openai";
+
+const configuration = new Configuration({
+  apiKey: "[AZURE_OPENAI_API_KEY]",
+  basePath: "https://oai.hconeai.com/openai/deployments/[DEPLOYMENT]",
+  baseOptions: {
+    headers: {
+      "Helicone-Auth": `Bearer [HELICONE_API_KEY]`,
+      "api-key": "[AZURE_OPENAI_API_KEY]",
+      "Helicone-OpenAI-Api-Base": "https://[AZURE_DOMAIN].openai.azure.com",
+    },
+    params: {
+      "api-version": "[API_VERSION]",
+    },
+  },
+});
+
+const openai = new OpenAIApi(configuration);
+```
+
+  </Tab>
+
+  <Tab title="Python w/package">
+
+```python
+from helicone.openai_proxy import openai
+openai.api_type = "azure"
+openai.api_base = "https://[YOUR_AZURE_DOMAIN].openai.azure.com"
+openai.api_version = "2023-03-15-preview"
+openai.api_key = YOUR_AZURE_API_KEY
+
+response = openai.ChatCompletion.create(
+    engine = 'gpt-35-turbo',
+    messages = [{
+        'role': 'user',
+        'content': "Hello World!"
+    }],
+    max_tokens=15,
+)
+
+```
+
+    </Tab>
+
+</Tabs>
